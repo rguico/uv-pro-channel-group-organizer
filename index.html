@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Viewer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>CSV Viewer</h1>
+
+  <div class="upload-area">
+    <label for="file-input">Choose a CSV file to upload:</label><br>
+    <input type="file" id="file-input" accept=".csv">
+  </div>
+
+  <div id="status" class="info"></div>
+  <button id="clear-btn" style="display:none;">Clear stored data</button>
+
+  <div class="table-wrapper">
+    <table id="csv-table" style="display:none;">
+      <thead id="csv-head"></thead>
+      <tbody id="csv-body"></tbody>
+    </table>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

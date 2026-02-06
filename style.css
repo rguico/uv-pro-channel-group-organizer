@@ -1,0 +1,14 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; max-width: 960px; margin: 0 auto; padding: 2rem; color: #333; }
+h1 { margin-bottom: 1rem; }
+.upload-area { border: 2px dashed #aaa; border-radius: 8px; padding: 2rem; text-align: center; margin-bottom: 1rem; }
+.upload-area input { margin-top: 0.5rem; }
+button { padding: 0.4rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+#clear-btn { background: #e74c3c; color: #fff; margin-bottom: 1rem; }
+#clear-btn:hover { background: #c0392b; }
+table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; font-size: 0.85rem; }
+th { background: #f4f4f4; position: sticky; top: 0; }
+tr:nth-child(even) { background: #fafafa; }
+.table-wrapper { max-height: 70vh; overflow: auto; }
+.info { color: #888; font-size: 0.9rem; margin-bottom: 1rem; }
