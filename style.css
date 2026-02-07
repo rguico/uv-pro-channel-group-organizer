@@ -139,6 +139,16 @@ button {
   background: rgb(103, 172, 91);
 }
 
+/* Drag-and-drop visual feedback */
+.channel-cell.dragging {
+  opacity: 0.4;
+}
+
+.channel-cell.drag-over {
+  border-color: #f1c40f;
+  background: #3a3a2a;
+}
+
 /* VFO cells greyed out */
 .vfo-cell {
   opacity: 0.4;
