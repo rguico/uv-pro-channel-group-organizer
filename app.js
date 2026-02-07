@@ -2,20 +2,30 @@ const STORAGE_KEY = 'csv_data';
 const fileInput = document.getElementById('file-input');
 const status = document.getElementById('status');
 const clearBtn = document.getElementById('clear-btn');
-const csvTable = document.getElementById('csv-table');
-const csvHead = document.getElementById('csv-head');
-const csvBody = document.getElementById('csv-body');
+const channelGrid = document.getElementById('channel-grid');
 
-function parseCSV(text) {
-  const rows = [];
+const TOTAL_CHANNELS = 32;
+
+// Column names from the CSV header
+const COL = {
+  TITLE: 'title',
+  TX_FREQ: 'tx_freq',
+  RX_FREQ: 'rx_freq',
+  TX_SUB: 'tx_sub_audio(ctcss=freq/dcs=number)',
+  RX_SUB: 'rx_sub_audio(ctcss=freq/dcs=number)',
+  BANDWIDTH: 'bandwidth(12500/25000)',
+  SCAN: 'scan(0=off/1=on)',
+};
+
+function parseCSVLine(line) {
+  const fields = [];
   let current = '';
   let inQuotes = false;
-  const chars = text.trim();
 
-  for (let i = 0; i < chars.length; i++) {
-    const ch = chars[i];
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
     if (inQuotes) {
-      if (ch === '"' && chars[i + 1] === '"') {
+      if (ch === '"' && line[i + 1] === '"') {
         current += '"';
         i++;
       } else if (ch === '"') {
@@ -27,51 +37,150 @@ function parseCSV(text) {
       if (ch === '"') {
         inQuotes = true;
       } else if (ch === ',') {
-        rows[rows.length - 1].push(current);
+        fields.push(current);
         current = '';
-      } else if (ch === '\n' || (ch === '\r' && chars[i + 1] === '\n')) {
-        rows[rows.length - 1].push(current);
-        current = '';
-        rows.push([]);
-        if (ch === '\r') i++;
       } else {
-        if (rows.length === 0) rows.push([]);
         current += ch;
       }
     }
   }
-  if (rows.length > 0) {
-    rows[rows.length - 1].push(current);
-  }
-  return rows.filter(r => r.length > 0 && r.some(c => c.trim() !== ''));
+  fields.push(current);
+  return fields;
 }
 
-function renderTable(rows) {
-  if (rows.length === 0) return;
-  csvHead.innerHTML = '';
-  csvBody.innerHTML = '';
+function parseCSV(text) {
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  if (lines.length === 0) return { headers: [], channels: [] };
 
-  const headerRow = document.createElement('tr');
-  rows[0].forEach(cell => {
-    const th = document.createElement('th');
-    th.textContent = cell;
-    headerRow.appendChild(th);
-  });
-  csvHead.appendChild(headerRow);
+  const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+  const channels = [];
 
-  for (let i = 1; i < rows.length; i++) {
-    const tr = document.createElement('tr');
-    rows[i].forEach(cell => {
-      const td = document.createElement('td');
-      td.textContent = cell;
-      tr.appendChild(td);
-    });
-    csvBody.appendChild(tr);
+  for (let i = 1; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    if (trimmed === '') {
+      channels.push(null);
+    } else {
+      channels.push(parseCSVLine(lines[i]));
+    }
   }
 
-  csvTable.style.display = 'table';
+  return { headers, channels };
+}
+
+function getField(headers, row, colName) {
+  const idx = headers.indexOf(colName);
+  if (idx < 0 || idx >= row.length) return '';
+  return row[idx].trim();
+}
+
+function deriveBandwidth(headers, row) {
+  const val = getField(headers, row, COL.BANDWIDTH);
+  if (val === '12500') return 'N';
+  if (val === '25000') return 'W';
+  return '';
+}
+
+function deriveScan(headers, row) {
+  return getField(headers, row, COL.SCAN) === '1' ? '\u2968' : '';
+}
+
+function deriveOffset(headers, row) {
+  const tx = parseInt(getField(headers, row, COL.TX_FREQ), 10) || 0;
+  const rx = parseInt(getField(headers, row, COL.RX_FREQ), 10) || 0;
+  if (tx === 0 && rx === 0) return '';
+  if (tx === 0) return '';
+  return tx < rx ? '-' : '+';
+}
+
+function deriveSubAudio(headers, row) {
+  const txSub = parseInt(getField(headers, row, COL.TX_SUB), 10) || 0;
+  const rxSub = parseInt(getField(headers, row, COL.RX_SUB), 10) || 0;
+  const val = txSub || rxSub;
+  if (val === 0) return '';
+  return val < 6700 ? 'DTS' : 'CTC';
+}
+
+function buildCellHTML(channelNum) {
+  const isVFO1 = channelNum === 31;
+  const isVFO2 = channelNum === 32;
+
+  if (isVFO1 || isVFO2) {
+    const vfoLabel = isVFO1 ? 'VFO1' : 'VFO2';
+    return `<div class="cell-header">` +
+      `<span class="cell-number" id="ch-${channelNum}-number">${channelNum}</span>` +
+      `<span class="cell-flags">` +
+      `<span id="ch-${channelNum}-bandwidth"></span>` +
+      `<span id="ch-${channelNum}-scan"></span>` +
+      `</span>` +
+      `</div>` +
+      `<div class="cell-name" id="ch-${channelNum}-title">${vfoLabel}</div>` +
+      `<div class="cell-detail">` +
+      `<span id="ch-${channelNum}-offset"></span>` +
+      `<span id="ch-${channelNum}-subaudio"></span>` +
+      `</div>`;
+  }
+
+  return `<div class="cell-header">` +
+    `<span class="cell-number" id="ch-${channelNum}-number">${channelNum}</span>` +
+    `<span class="cell-flags">` +
+    `<span id="ch-${channelNum}-bandwidth"></span>` +
+    `<span id="ch-${channelNum}-scan"></span>` +
+    `</span>` +
+    `</div>` +
+    `<div class="cell-name" id="ch-${channelNum}-title"></div>` +
+    `<div class="cell-detail">` +
+    `<span id="ch-${channelNum}-offset"></span>` +
+    `<span id="ch-${channelNum}-subaudio"></span>` +
+    `</div>`;
+}
+
+function buildEmptyGrid() {
+  channelGrid.innerHTML = '';
+  for (let i = 1; i <= TOTAL_CHANNELS; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'channel-cell';
+    cell.id = `ch-${i}`;
+    if (i === 31 || i === 32) cell.classList.add('vfo-cell');
+    cell.innerHTML = buildCellHTML(i);
+    channelGrid.appendChild(cell);
+  }
+}
+
+function renderGrid(parsed) {
+  buildEmptyGrid();
+  const { headers, channels } = parsed;
+  if (headers.length === 0) return;
+
+  let populated = 0;
+
+  for (let i = 0; i < channels.length && i < 30; i++) {
+    const channelNum = i + 1;
+    const row = channels[i];
+    if (!row) continue;
+
+    const title = getField(headers, row, COL.TITLE);
+    const bandwidth = deriveBandwidth(headers, row);
+    const scan = deriveScan(headers, row);
+    const offset = deriveOffset(headers, row);
+    const subAudio = deriveSubAudio(headers, row);
+
+    const titleEl = document.getElementById(`ch-${channelNum}-title`);
+    const bwEl = document.getElementById(`ch-${channelNum}-bandwidth`);
+    const scanEl = document.getElementById(`ch-${channelNum}-scan`);
+    const offsetEl = document.getElementById(`ch-${channelNum}-offset`);
+    const subEl = document.getElementById(`ch-${channelNum}-subaudio`);
+
+    if (titleEl) titleEl.textContent = title;
+    if (bwEl) bwEl.textContent = bandwidth;
+    if (scanEl) scanEl.textContent = scan;
+    if (offsetEl) offsetEl.textContent = offset;
+    if (subEl) subEl.textContent = subAudio;
+
+    populated++;
+  }
+
   clearBtn.style.display = 'inline-block';
-  status.textContent = `Showing ${rows.length - 1} row(s) with ${rows[0].length} column(s).`;
+  status.textContent = `Loaded ${populated} channel(s).`;
 }
 
 fileInput.addEventListener('change', (e) => {
@@ -86,24 +195,25 @@ fileInput.addEventListener('change', (e) => {
       status.textContent = 'File too large for localStorage.';
       return;
     }
-    const rows = parseCSV(text);
-    renderTable(rows);
+    const parsed = parseCSV(text);
+    renderGrid(parsed);
   };
   reader.readAsText(file);
 });
 
 clearBtn.addEventListener('click', () => {
   localStorage.removeItem(STORAGE_KEY);
-  csvTable.style.display = 'none';
+  buildEmptyGrid();
   clearBtn.style.display = 'none';
   fileInput.value = '';
   status.textContent = 'Stored data cleared.';
 });
 
-// On page load, check for stored CSV data
+// On page load, build grid and populate from localStorage if available
+buildEmptyGrid();
 const stored = localStorage.getItem(STORAGE_KEY);
 if (stored) {
-  const rows = parseCSV(stored);
-  renderTable(rows);
+  const parsed = parseCSV(stored);
+  renderGrid(parsed);
   status.textContent += ' (Loaded from localStorage)';
 }

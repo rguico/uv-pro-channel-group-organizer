@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSV Viewer</title>
+  <title>Channel Group Organizer</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>CSV Viewer</h1>
-
   <div class="upload-area">
-    <label for="file-input">Choose a CSV file to upload:</label><br>
+    <label for="file-input">Choose a CSV file to upload:</label>
     <input type="file" id="file-input" accept=".csv">
+    <button id="clear-btn" style="display:none;">Clear stored data</button>
+    <span id="status" class="info"></span>
   </div>
 
-  <div id="status" class="info"></div>
-  <button id="clear-btn" style="display:none;">Clear stored data</button>
-
-  <div class="table-wrapper">
-    <table id="csv-table" style="display:none;">
-      <thead id="csv-head"></thead>
-      <tbody id="csv-body"></tbody>
-    </table>
+  <div class="layout">
+    <div class="grid-panel">
+      <div id="channel-grid" class="channel-grid">
+        <!-- 32 channel cells (8 rows x 4 cols) -->
+      </div>
+    </div>
+    <div class="side-panel">
+      <!-- Reserved for future use -->
+    </div>
   </div>
 
   <script src="app.js"></script>
