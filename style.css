@@ -65,7 +65,8 @@ button {
 
 .channel-cell {
   background: #2a2a2a;
-  border: 1px solid #444;
+  border: 1px solid rgb(103, 172, 91);
+  cursor: pointer;
   border-radius: 3px;
   padding: 0.4rem 0.5rem;
   display: flex;
@@ -113,6 +114,23 @@ button {
   font-size: 0.7rem;
   color: #888;
   line-height: 1;
+}
+
+/* Populated cells: white text except scan symbol */
+.channel-cell.populated .cell-number,
+.channel-cell.populated .cell-name,
+.channel-cell.populated .cell-detail,
+.channel-cell.populated .cell-flags span {
+  color: #fff;
+}
+
+.channel-cell.populated .cell-flags .cell-scan {
+  color: #6a9fb5;
+}
+
+/* Selected cell */
+.channel-cell.selected {
+  background: rgb(103, 172, 91);
 }
 
 /* VFO cells greyed out */

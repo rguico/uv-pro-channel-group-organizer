@@ -93,11 +93,9 @@ function deriveOffset(headers, row) {
 }
 
 function deriveSubAudio(headers, row) {
-  const txSub = parseInt(getField(headers, row, COL.TX_SUB), 10) || 0;
   const rxSub = parseInt(getField(headers, row, COL.RX_SUB), 10) || 0;
-  const val = txSub || rxSub;
-  if (val === 0) return '';
-  return val < 6700 ? 'DTS' : 'CTC';
+  if (rxSub === 0) return '';
+  return rxSub < 6700 ? 'DTS' : 'CTC';
 }
 
 function buildCellHTML(channelNum) {
@@ -110,7 +108,7 @@ function buildCellHTML(channelNum) {
       `<span class="cell-number" id="ch-${channelNum}-number">${channelNum}</span>` +
       `<span class="cell-flags">` +
       `<span id="ch-${channelNum}-bandwidth"></span>` +
-      `<span id="ch-${channelNum}-scan"></span>` +
+      `<span class="cell-scan" id="ch-${channelNum}-scan"></span>` +
       `</span>` +
       `</div>` +
       `<div class="cell-name" id="ch-${channelNum}-title">${vfoLabel}</div>` +
@@ -124,7 +122,7 @@ function buildCellHTML(channelNum) {
     `<span class="cell-number" id="ch-${channelNum}-number">${channelNum}</span>` +
     `<span class="cell-flags">` +
     `<span id="ch-${channelNum}-bandwidth"></span>` +
-    `<span id="ch-${channelNum}-scan"></span>` +
+    `<span class="cell-scan" id="ch-${channelNum}-scan"></span>` +
     `</span>` +
     `</div>` +
     `<div class="cell-name" id="ch-${channelNum}-title"></div>` +
@@ -176,6 +174,9 @@ function renderGrid(parsed) {
     if (offsetEl) offsetEl.textContent = offset;
     if (subEl) subEl.textContent = subAudio;
 
+    const cellEl = document.getElementById(`ch-${channelNum}`);
+    if (cellEl) cellEl.classList.add('populated');
+
     populated++;
   }
 
@@ -207,6 +208,15 @@ clearBtn.addEventListener('click', () => {
   clearBtn.style.display = 'none';
   fileInput.value = '';
   status.textContent = 'Stored data cleared.';
+});
+
+// Select a cell on click (only one at a time)
+channelGrid.addEventListener('click', (e) => {
+  const cell = e.target.closest('.channel-cell');
+  if (!cell) return;
+  const prev = channelGrid.querySelector('.channel-cell.selected');
+  if (prev) prev.classList.remove('selected');
+  cell.classList.add('selected');
 });
 
 // On page load, build grid and populate from localStorage if available
