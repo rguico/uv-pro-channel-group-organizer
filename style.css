@@ -40,6 +40,15 @@ button {
   background: #c0392b;
 }
 
+#export-btn {
+  background: #2ecc71;
+  color: #fff;
+}
+
+#export-btn:hover {
+  background: #27ae60;
+}
+
 /* Title bar */
 .title-bar {
   font-size: 1.2rem;

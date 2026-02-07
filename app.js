@@ -91,6 +91,8 @@ function renderGrid(parsed) {
   }
 
   clearBtn.style.display = 'inline-block';
+  const exportBtn = document.getElementById('export-btn');
+  if (exportBtn) exportBtn.style.display = 'inline-block';
   status.textContent = `Loaded ${populated} channel(s).`;
 }
 

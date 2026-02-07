@@ -126,10 +126,22 @@ function importCSVToGrid(text) {
   renderGrid(parsed);
 }
 
+function exportCSV() {
+  const csv = serializeCSV(channelData);
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'channels.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function initImport() {
   const fileInput = document.getElementById('file-input');
   const status = document.getElementById('status');
   const clearBtn = document.getElementById('clear-btn');
+  const exportBtn = document.getElementById('export-btn');
 
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -152,8 +164,14 @@ function initImport() {
     localStorage.removeItem(STORAGE_KEY);
     buildEmptyGrid();
     clearBtn.style.display = 'none';
+    exportBtn.style.display = 'none';
     fileInput.value = '';
     status.textContent = 'Stored data cleared.';
+  });
+
+  exportBtn.addEventListener('click', () => {
+    if (channelData.headers.length === 0) return;
+    exportCSV();
   });
 
   // Load from localStorage on startup
