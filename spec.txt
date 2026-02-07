@@ -1,0 +1,15 @@
++-----------------+
+| 1           W ⥸ |
+|                 |
+|     K9IIK 2m    |
+|                 |
+| + CTC           |
++-----------------+
+
+- 1: This corresponds to the actual line in the CSV file, not counting the header line. For cells 31 and 32, display "VFO1" and "VFO2" but grey out the cell.
+- If a link is blank, display the cell number but nothing else.
+- W: If the bandwidth is 12500, output "N". If it is 25000, output "W".
+- ⥸: If the scan is 1, output "⥸". Otherwise leave blank.
+- K9IIK 2m: Display the actual title corresponding to the row.
+- +: If the tx_freq is less than the rx_freq, output "-". Otherwise output "+".
+- CTC: If the tx_sub_audio or rx_sub_audio column is nonzero but below 6700, display DTS. If it is above 6700, display CTC.
