@@ -168,6 +168,17 @@ channelGrid.addEventListener('dragend', () => {
   channelGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
 });
 
+// Modal dialogs
+document.getElementById('how-btn').addEventListener('click', () => {
+  document.getElementById('how-dialog').showModal();
+});
+document.getElementById('about-btn').addEventListener('click', () => {
+  document.getElementById('about-dialog').showModal();
+});
+document.querySelectorAll('.modal-close').forEach(btn => {
+  btn.addEventListener('click', () => btn.closest('dialog').close());
+});
+
 // On page load, build grid and initialize import
 buildEmptyGrid();
 initImport();

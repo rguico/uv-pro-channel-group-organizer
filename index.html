@@ -8,6 +8,24 @@
 </head>
 <body>
   <h1 class="title-bar">BTech UV-Pro Channel Group Organizer</h1>
+  <nav class="submenu">
+    <button id="how-btn" class="submenu-link">How This Works</button>
+    <button id="about-btn" class="submenu-link">About</button>
+  </nav>
+
+  <dialog id="how-dialog" class="modal">
+    <h2>How This Works</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <button class="modal-close">Close</button>
+  </dialog>
+
+  <dialog id="about-dialog" class="modal">
+    <h2>About</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.</p>
+    <p>Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+    <button class="modal-close">Close</button>
+  </dialog>
 
   <div class="layout">
     <div class="grid-panel">
@@ -16,10 +34,18 @@
       </div>
     </div>
     <div class="side-panel">
+      <div class="group-name-area">
+        <label for="group-name">Channel Group Name:</label>
+        <input type="text" id="group-name" placeholder="Enter group name...">
+      </div>
+      <div class="group-select-area" style="display:none;">
+        <label for="group-select">Switch group:</label>
+        <select id="group-select"></select>
+      </div>
       <div class="upload-area">
-        <label for="file-input">Choose a CSV file to upload:</label>
+        <label for="file-input">Choose a CSV file to upload. Same filename will overwrite:</label>
         <input type="file" id="file-input" accept=".csv">
-        <button id="clear-btn" style="display:none;">Clear stored data</button>
+        <button id="clear-btn" style="display:none;">Delete group</button>
         <button id="export-btn" style="display:none;">Export CSV</button>
         <span id="status" class="info"></span>
       </div>

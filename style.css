@@ -7,6 +7,46 @@ body {
   padding: 1rem;
 }
 
+.group-name-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.group-name-area label {
+  font-size: 0.9rem;
+}
+
+#group-name {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #eee;
+  font-size: 0.9rem;
+}
+
+.group-select-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.group-select-area label {
+  font-size: 0.9rem;
+}
+
+#group-select {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #eee;
+  font-size: 0.9rem;
+}
+
 .upload-area {
   display: flex;
   flex-direction: column;
@@ -53,7 +93,60 @@ button {
 .title-bar {
   font-size: 1.2rem;
   color: #eee;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Submenu */
+.submenu {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.submenu-link {
+  background: none;
+  color: #6a9fb5;
+  padding: 0;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.submenu-link:hover {
+  color: #8cc5db;
+}
+
+/* Modal (dialog) */
+.modal {
+  background: #2a2a2a;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 32rem;
+  width: 90%;
+}
+
+.modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal h2 {
+  color: #eee;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.modal-close {
+  background: #555;
+  color: #eee;
+  margin-top: 0.5rem;
 }
 
 /* Layout: 50/50 split */
