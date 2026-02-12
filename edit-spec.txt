@@ -1,0 +1,202 @@
+In an outlined area below the Export CSV button:
+- A form should appear when a channel is selected
+- Within this form, every field from the CSV should be editable, unless otherwise specified
+- The fields should be prepopulated with the selected channel, if applicable
+- Another field, "Comment", should be added as a textarea at the bottom. This should persist to localstorage but not be exported in the resulting CSV.
+- If a validation error occurs, display all in the toast. 
+- Validation logic should go in validation.js
+- Binary fields are stored as (0,1) and should be represented by a checkbox.
+- There should be a "Clear" button
+- There should be a "Save" button
+- There should be a "Cancel" button
+
+The following describes each field, including validations:
+- title: "Title". ASCII characters only. Max length of 8.
+- tx_freq: "Transmit Frequency (MHz)". Display numbers like 449875000 as a text field formatted to 000.000, like (i.e. 449.875). Allows values 144.000-148.000 and 420.000-450.000.
+- rx_freq: "Receive Frequency (MHz)". Display numbers like 449875000 as a text field formatted to 000.000, like (i.e. 449.875). Allows values 88.000-137.000,  144.000-148.000, and 420.000-450.000. 
+- tx_sub_audio: "Transmit Subtone". See "Subtones" section.
+- rx_sub_audio: "Receive Subtone". See "Subtones" section.
+- tx_power: "Transmit Power". One of (Low,Medium,High). The underlying values are (L,M,H). Medium is the default.
+- bandwidth: "Bandwidth". One of (12.5 MHz,25.0 MHz). The underlying values are (12500,25000).
+- scan: "Include when scanning". A binary field.
+- talk around: "Talk Around". A binary field.
+- pre_de_emph_bypass: "Bypass pre/de-emphasis circuitry in the radio". A binary field.
+- sign: "Transmit callsign after transmission". A binary field.
+- tx_dis: "Disable transmitter". A binary field.
+- bclo: "Busy channel lockout". A binary field.
+- mute: "Mute audio". A binary field.
+- rx_modulation: "Rx AM?" Not editable. If the rx_freq is between 118 and 137 MHz, 1; otherwise 0. This updates in realtime.
+- tx_modulation: "Tx AM?" Not editable. If the tx_freq is between 118 and 137 MHz, 1; otherwise 0. This updates in realtime.
+
+# Subtones
+One or two dropdowns. For the first dropdown, the options are: Off, CTCSS, DCS. Off is the default.
+
+## Off
+Do not show the second dropdown. Store 0 for this field.
+
+## CTCS
+For the second dropdown, display the following numbers. The value for the dropdown is that number multiplied by 100, i.e. "Display '114.8 MHz', value is 11480" 
+
+67
+69.3
+71.9
+74.4
+77
+79.7
+82.5
+85.4
+88.5
+91.5
+94.8
+97.4
+100
+103.5
+107.2
+110.9
+114.8
+118.8
+123
+127.3
+131.8
+136.5
+141.3
+146.2
+150.0
+151.4
+156.7
+159.8
+162.2
+165.5
+167.9
+171.3
+173.8
+177.3
+179.9
+183.5
+186.2
+189.9
+192.8
+196.6
+199.5
+203.5
+206.5
+210.7
+213.8
+218.1
+225.7
+229.1
+233.6
+237.1
+241.8
+245.5
+250.3
+254.1
+
+## DCS
+
+Below are the valid values. For the display value, present "DCS-XXXN" for now, where XXX is a 0-leading integer from the corresponding value.
+
+23
+25
+26
+31
+32
+36
+43
+47
+51
+53
+54
+65
+71
+72
+73
+74
+114
+115
+116
+122
+125
+131
+132
+134
+143
+145
+152
+155
+156
+162
+165
+172
+174
+205
+212
+223
+225
+226
+243
+244
+245
+246
+251
+252
+255
+261
+263
+265
+266
+271
+274
+306
+311
+315
+325
+331
+332
+343
+346
+351
+356
+364
+365
+371
+411
+412
+413
+423
+431
+432
+445
+446
+452
+454
+455
+462
+464
+465
+466
+503
+506
+516
+523
+526
+532
+546
+565
+606
+612
+624
+627
+631
+632
+654
+662
+664
+703
+712
+723
+731
+732
+734
+743
+754

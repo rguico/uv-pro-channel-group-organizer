@@ -55,7 +55,6 @@ function buildEmptyGrid() {
 function renderGrid(parsed) {
   buildEmptyGrid();
   const { headers, channels } = parsed;
-  const status = document.getElementById('status');
   const clearBtn = document.getElementById('clear-btn');
   if (headers.length === 0) return;
 
@@ -93,7 +92,7 @@ function renderGrid(parsed) {
   clearBtn.style.display = 'inline-block';
   const exportBtn = document.getElementById('export-btn');
   if (exportBtn) exportBtn.style.display = 'inline-block';
-  status.textContent = `Loaded ${populated} channel(s).`;
+  showToast(`Loaded ${populated} channel(s).`);
 }
 
 // Select a cell on click (only one at a time, not VFO cells)

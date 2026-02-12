@@ -1,6 +1,16 @@
 const GROUPS_KEY = 'channel_groups';
 const ACTIVE_KEY = 'active_group';
 
+let toastTimer = null;
+function showToast(message) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = message;
+  el.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('visible'), 5000);
+}
+
 // Shared in-memory data model — holds the current parsed state
 let channelData = { headers: [], channels: [] };
 let activeGroupName = '';
@@ -190,7 +200,6 @@ function exportCSV() {
 
 function initImport() {
   const fileInput = document.getElementById('file-input');
-  const status = document.getElementById('status');
   const clearBtn = document.getElementById('clear-btn');
   const exportBtn = document.getElementById('export-btn');
   const groupNameInput = document.getElementById('group-name');
@@ -236,6 +245,8 @@ function initImport() {
   });
 
   clearBtn.addEventListener('click', () => {
+    const label = activeGroupName || 'this group';
+    if (!confirm(`Delete "${label}"? This cannot be undone.`)) return;
     // Remove the active group from storage
     const groups = getGroups();
     if (activeGroupName) delete groups[activeGroupName];
@@ -247,7 +258,7 @@ function initImport() {
     clearBtn.style.display = 'none';
     exportBtn.style.display = 'none';
     fileInput.value = '';
-    status.textContent = 'Stored data cleared.';
+    showToast('Stored data cleared.');
     // If other groups remain, load the first one
     const remaining = Object.keys(groups);
     if (remaining.length > 0) {
@@ -278,6 +289,6 @@ function initImport() {
   const savedName = localStorage.getItem(ACTIVE_KEY);
   if (savedName) {
     loadGroup(savedName);
-    status.textContent += ' (Loaded from localStorage)';
+    showToast('Loaded from localStorage.');
   }
 }
