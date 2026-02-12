@@ -48,11 +48,110 @@
         <button id="clear-btn" style="display:none;">Delete group</button>
         <button id="export-btn" style="display:none;">Export CSV</button>
       </div>
+      <div id="edit-form-area" class="edit-form-area">
+        <div id="edit-form-empty" class="edit-form-empty">Select a channel to edit.</div>
+        <div id="edit-form" style="display:none;">
+          <h3 id="edit-form-title">Edit Channel</h3>
+
+          <div class="form-group">
+            <label for="edit-title">Title</label>
+            <input type="text" id="edit-title" maxlength="8" placeholder="Max 8 chars">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group-half">
+              <label for="edit-tx-freq">Transmit Frequency (MHz)</label>
+              <input type="text" id="edit-tx-freq" placeholder="000.000">
+            </div>
+            <div class="form-group form-group-half">
+              <label for="edit-rx-freq">Receive Frequency (MHz)</label>
+              <input type="text" id="edit-rx-freq" placeholder="000.000">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group-half">
+              <label>Transmit Subtone</label>
+              <div class="subtone-controls">
+                <select id="edit-tx-sub-type">
+                  <option value="off">Off</option>
+                  <option value="ctcss">CTCSS</option>
+                  <option value="dcs">DCS</option>
+                </select>
+                <select id="edit-tx-sub-value" style="display:none;"></select>
+              </div>
+            </div>
+            <div class="form-group form-group-half">
+              <label>Receive Subtone</label>
+              <div class="subtone-controls">
+                <select id="edit-rx-sub-type">
+                  <option value="off">Off</option>
+                  <option value="ctcss">CTCSS</option>
+                  <option value="dcs">DCS</option>
+                </select>
+                <select id="edit-rx-sub-value" style="display:none;"></select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group-half">
+              <label for="edit-tx-power">Transmit Power</label>
+              <select id="edit-tx-power">
+                <option value="L">Low</option>
+                <option value="M" selected>Medium</option>
+                <option value="H">High</option>
+              </select>
+            </div>
+            <div class="form-group form-group-half">
+              <label for="edit-bandwidth">Bandwidth</label>
+              <select id="edit-bandwidth">
+                <option value="12500">12.5 MHz</option>
+                <option value="25000">25.0 MHz</option>
+              </select>
+            </div>
+          </div>
+
+          <fieldset class="form-fieldset">
+            <legend>Options</legend>
+            <div class="checkbox-grid">
+              <label class="checkbox-label"><input type="checkbox" id="edit-scan"> Include when scanning</label>
+              <label class="checkbox-label"><input type="checkbox" id="edit-talk-around"> Talk Around</label>
+              <label class="checkbox-label"><input type="checkbox" id="edit-pre-de-emph"> Bypass pre/de-emphasis</label>
+              <label class="checkbox-label"><input type="checkbox" id="edit-sign"> Transmit callsign</label>
+              <label class="checkbox-label"><input type="checkbox" id="edit-tx-dis"> Disable transmitter</label>
+              <label class="checkbox-label"><input type="checkbox" id="edit-bclo"> Busy channel lockout</label>
+              <label class="checkbox-label"><input type="checkbox" id="edit-mute"> Mute audio</label>
+            </div>
+          </fieldset>
+
+          <div class="form-row">
+            <div class="form-group form-group-half">
+              <label>Rx AM? <span id="edit-rx-mod-indicator" class="mod-indicator">FM</span></label>
+            </div>
+            <div class="form-group form-group-half">
+              <label>Tx AM? <span id="edit-tx-mod-indicator" class="mod-indicator">FM</span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-comment">Comment</label>
+            <textarea id="edit-comment" rows="2" placeholder="Notes (saved locally, not exported)"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button id="edit-save-btn" class="btn-save">Save</button>
+            <button id="edit-clear-btn" class="btn-clear-channel">Clear</button>
+            <button id="edit-cancel-btn" class="btn-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <div id="toast" class="toast"></div>
 
+  <script src="validation.js"></script>
   <script src="import.js"></script>
   <script src="app.js"></script>
 </body>

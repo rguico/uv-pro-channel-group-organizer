@@ -1,5 +1,6 @@
 const GROUPS_KEY = 'channel_groups';
 const ACTIVE_KEY = 'active_group';
+const COMMENTS_KEY = 'channel_comments';
 
 let toastTimer = null;
 function showToast(message) {
@@ -14,17 +15,34 @@ function showToast(message) {
 // Shared in-memory data model — holds the current parsed state
 let channelData = { headers: [], channels: [] };
 let activeGroupName = '';
+let channelComments = {};
 
-// Column names from the CSV header
+// Column names from the CSV header (all 16 columns)
 const COL = {
   TITLE: 'title',
   TX_FREQ: 'tx_freq',
   RX_FREQ: 'rx_freq',
   TX_SUB: 'tx_sub_audio(ctcss=freq/dcs=number)',
   RX_SUB: 'rx_sub_audio(ctcss=freq/dcs=number)',
+  TX_POWER: 'tx_power(h/m/l)',
   BANDWIDTH: 'bandwidth(12500/25000)',
   SCAN: 'scan(0=off/1=on)',
+  TALK_AROUND: 'talk around(0=off/1=on)',
+  PRE_DE_EMPH: 'pre_de_emph_bypass(0=off/1=on)',
+  SIGN: 'sign(0=off/1=on)',
+  TX_DIS: 'tx_dis(0=off/1=on)',
+  BCLO: 'bclo(0=off/1=on)',
+  MUTE: 'mute(0=off/1=on)',
+  RX_MOD: 'rx_modulation(0=fm/1=am)',
+  TX_MOD: 'tx_modulation(0=fm/1=am)',
 };
+
+// Canonical ordered list of all 16 headers
+const FULL_HEADERS = [
+  COL.TITLE, COL.TX_FREQ, COL.RX_FREQ, COL.TX_SUB, COL.RX_SUB,
+  COL.TX_POWER, COL.BANDWIDTH, COL.SCAN, COL.TALK_AROUND, COL.PRE_DE_EMPH,
+  COL.SIGN, COL.TX_DIS, COL.BCLO, COL.MUTE, COL.RX_MOD, COL.TX_MOD
+];
 
 function parseCSVLine(line) {
   const fields = [];
@@ -80,6 +98,61 @@ function getField(headers, row, colName) {
   const idx = headers.indexOf(colName);
   if (idx < 0 || idx >= row.length) return '';
   return row[idx].trim();
+}
+
+function setField(headers, row, colName, value) {
+  const idx = headers.indexOf(colName);
+  if (idx < 0) return;
+  while (row.length <= idx) row.push('');
+  row[idx] = value;
+}
+
+// Ensure headers include all 16 columns and rows are padded accordingly
+function ensureFullHeaders() {
+  for (const h of FULL_HEADERS) {
+    if (channelData.headers.indexOf(h) < 0) {
+      channelData.headers.push(h);
+    }
+  }
+  const colCount = channelData.headers.length;
+  for (let i = 0; i < channelData.channels.length; i++) {
+    const row = channelData.channels[i];
+    if (row) {
+      while (row.length < colCount) row.push('0');
+    }
+  }
+}
+
+// Comment persistence helpers
+function getComments() {
+  try {
+    return JSON.parse(localStorage.getItem(COMMENTS_KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveComments() {
+  const name = activeGroupName;
+  if (!name) return;
+  try {
+    const all = getComments();
+    all[name] = channelComments;
+    localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
+  } catch (e) {
+    // Silently fail
+  }
+}
+
+function loadCommentsForGroup(name) {
+  const all = getComments();
+  channelComments = (all[name] || {});
+}
+
+function deleteCommentsForGroup(name) {
+  const all = getComments();
+  delete all[name];
+  localStorage.setItem(COMMENTS_KEY, JSON.stringify(all));
 }
 
 function deriveBandwidth(headers, row) {
@@ -140,6 +213,7 @@ function saveToLocalStorage() {
     groups[name] = serializeCSV(channelData);
     localStorage.setItem(GROUPS_KEY, JSON.stringify(groups));
     localStorage.setItem(ACTIVE_KEY, name);
+    saveComments();
     updateGroupSelect();
   } catch (err) {
     // Silently fail — localStorage may be full
@@ -174,6 +248,7 @@ function loadGroup(name) {
   activeGroupName = name;
   localStorage.setItem(ACTIVE_KEY, name);
   document.getElementById('group-name').value = name;
+  loadCommentsForGroup(name);
   importCSVToGrid(csv);
   updateGroupSelect();
 }
@@ -181,6 +256,7 @@ function loadGroup(name) {
 function importCSVToGrid(text) {
   const parsed = parseCSV(text);
   channelData = parsed;
+  ensureFullHeaders();
   renderGrid(parsed);
 }
 
@@ -226,10 +302,16 @@ function initImport() {
     const newName = groupNameInput.value.trim();
     if (!newName || newName === activeGroupName) return;
     const groups = getGroups();
+    const allComments = getComments();
     if (activeGroupName && groups[activeGroupName]) {
       groups[newName] = groups[activeGroupName];
       delete groups[activeGroupName];
       localStorage.setItem(GROUPS_KEY, JSON.stringify(groups));
+      if (allComments[activeGroupName]) {
+        allComments[newName] = allComments[activeGroupName];
+        delete allComments[activeGroupName];
+        localStorage.setItem(COMMENTS_KEY, JSON.stringify(allComments));
+      }
     }
     activeGroupName = newName;
     localStorage.setItem(ACTIVE_KEY, newName);
@@ -249,7 +331,10 @@ function initImport() {
     if (!confirm(`Delete "${label}"? This cannot be undone.`)) return;
     // Remove the active group from storage
     const groups = getGroups();
-    if (activeGroupName) delete groups[activeGroupName];
+    if (activeGroupName) {
+      delete groups[activeGroupName];
+      deleteCommentsForGroup(activeGroupName);
+    }
     localStorage.setItem(GROUPS_KEY, JSON.stringify(groups));
     activeGroupName = '';
     groupNameInput.value = '';

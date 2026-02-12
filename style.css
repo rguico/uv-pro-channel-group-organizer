@@ -271,3 +271,157 @@ button {
 .vfo-cell {
   opacity: 0.4;
 }
+
+/* Edit form area */
+.edit-form-area {
+  margin-top: 1rem;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 1rem;
+  background: #222;
+}
+
+.edit-form-empty {
+  color: #888;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.edit-form-area h3 {
+  color: #eee;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.6rem;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #eee;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.form-group-half {
+  flex: 1;
+}
+
+.subtone-controls {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.subtone-controls select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #eee;
+  font-size: 0.85rem;
+  flex: 1;
+}
+
+.form-fieldset {
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.form-fieldset legend {
+  font-size: 0.8rem;
+  color: #aaa;
+  padding: 0 0.3rem;
+}
+
+.checkbox-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  accent-color: rgb(103, 172, 91);
+}
+
+.mod-indicator {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  background: #333;
+  color: #6a9fb5;
+}
+
+.mod-indicator.am {
+  background: #8b4513;
+  color: #ffd;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-save {
+  background: #2ecc71;
+  color: #fff;
+}
+
+.btn-save:hover {
+  background: #27ae60;
+}
+
+.btn-clear-channel {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.btn-clear-channel:hover {
+  background: #c0392b;
+}
+
+.btn-cancel {
+  background: #555;
+  color: #eee;
+}
+
+.btn-cancel:hover {
+  background: #666;
+}
